@@ -10,17 +10,6 @@ using NotificationSystem.Infrastructure.Queueing;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//TODO: Ver o que fazer com isso aqui
-/*var gateway = new Gateway("123");
-var service = new NotificationService();
-
-service.Send("news", "user", "news 1");
-service.Send("news", "user", "news 2");
-service.Send("news", "user", "news 3");
-service.Send("news", "another user", "news 1");
-service.Send("update", "user", "update 1");*/
-
-
 #region Clients
 builder.Services.AddSingleton<IGateway, Gateway>();
 #endregion

@@ -3,6 +3,7 @@ using NotificationSystem.Contracts.Infrastructure;
 
 namespace NotificationSystem.Infrastructure.Queueing
 {
+    //Faking AWS Simple Queue Service
     public class MemoryQueueProvider : IMemoryQueueProvider
     {
         private readonly IMemoryCache _memoryCache;
