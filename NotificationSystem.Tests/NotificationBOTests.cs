@@ -15,7 +15,8 @@ namespace NotificationSystem.Tests
         //Clients
         private readonly Mock<IGateway> _mockGateway;
         //Infrastructure
-        private readonly Mock<ICacheProvider> _mockCacheProvider;
+        private readonly Mock<IMemoryCacheProvider> _mockMemoryCacheProvider;
+        private readonly Mock<IMemoryQueueProvider> _mockMemoryQueueProvider;
         //Loggers
         private readonly Mock<ILogger<NotificationBO>> _loggerNotificationBO;
         //Business
@@ -28,11 +29,12 @@ namespace NotificationSystem.Tests
             //Clients
             _mockGateway = new Mock<IGateway>();
             //Infrastructure
-            _mockCacheProvider = new Mock<ICacheProvider>();
+            _mockMemoryCacheProvider = new Mock<IMemoryCacheProvider>();
+            _mockMemoryQueueProvider = new Mock<IMemoryQueueProvider>();
             //Loggers
             _loggerNotificationBO = new Mock<ILogger<NotificationBO>>();
             //Business
-            _notificationBO = new NotificationBO(_loggerNotificationBO.Object, _mockCacheProvider.Object, _mockGateway.Object);
+            _notificationBO = new NotificationBO(_loggerNotificationBO.Object, _mockMemoryCacheProvider.Object, _mockGateway.Object, _mockMemoryQueueProvider.Object);
             //Notification
             _notification = new NotificationDTO()
             {
@@ -62,9 +64,9 @@ namespace NotificationSystem.Tests
         [Fact]
         public async Task Send_ShouldThrowException_WhenRateLimitIsExceeded()
         {
-            _mockCacheProvider
+            _mockMemoryCacheProvider
                 .Setup(c => c.RetrieveAsync<Queue<DateTime>>(It.IsAny<string>()))
-                .Returns(new Queue<DateTime>(new[] { DateTime.UtcNow.AddMinutes(-1), DateTime.UtcNow }));
+                .Returns(new Queue<DateTime>(new[] { DateTime.UtcNow.AddSeconds(-30), DateTime.UtcNow }));
 
             // Act
             Func<Task> act = async () => await _notificationBO.Send(

@@ -3,8 +3,8 @@ using NotificationSystem.Contracts.Infrastructure;
 
 namespace NotificationSystem.Infrastructure.Caching
 {
-    //Faking a Redis Cache Provider
-    public class MemoryCacheProvider : ICacheProvider
+    //Faking Redis Cache Provider
+    public class MemoryCacheProvider : IMemoryCacheProvider
     {
         private readonly IMemoryCache _memoryCache;
         private static readonly TimeSpan DefaultTtl = TimeSpan.FromHours(24);

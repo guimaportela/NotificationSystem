@@ -1,10 +1,10 @@
 ﻿using NotificationSystem.Contracts.Clients;
+using System.Net;
 
 namespace NotificationSystem.Clients
 {
     public class Gateway : IGateway
     {
-        // Already implemented
         public async Task Send(string userId, string message)
         {
             Console.WriteLine($"Sending message to user {userId}");
