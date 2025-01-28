@@ -3,8 +3,6 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NotificationSystem.Business.Business;
-using NotificationSystem.Business.Services;
-using NotificationSystem.Common;
 using NotificationSystem.Contracts;
 using NotificationSystem.Contracts.Business;
 using NotificationSystem.Contracts.Clients;
