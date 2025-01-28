@@ -5,6 +5,7 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Web", "NotificationService\NotificationSystem.Web.csproj", "{4B720E9B-3DC7-451A-870C-97D6091182CF}"
 	ProjectSection(ProjectDependencies) = postProject
+		{452BF3FE-D0FE-46A8-824D-B1CDF6C5F228} = {452BF3FE-D0FE-46A8-824D-B1CDF6C5F228}
 		{6609FCE1-30A1-49A3-9382-3CF96AFD3326} = {6609FCE1-30A1-49A3-9382-3CF96AFD3326}
 		{69D41C20-B4A5-45BE-9FF9-6DCA406DFA6C} = {69D41C20-B4A5-45BE-9FF9-6DCA406DFA6C}
 		{AE737205-4D15-45CC-B1A3-A7FB3DE53E9A} = {AE737205-4D15-45CC-B1A3-A7FB3DE53E9A}
@@ -28,19 +29,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Infrastr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Common", "NotificationSystem.Common\NotificationSystem.Common.csproj", "{85A3B5D8-D4BE-4C69-AE9F-BAD58B1F0D26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationSystem.Exceptions", "NotificationSystem.Exceptions\NotificationSystem.Exceptions.csproj", "{27B81E54-B892-4D0A-ADC5-7544D958E3C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Exceptions", "NotificationSystem.Exceptions\NotificationSystem.Exceptions.csproj", "{27B81E54-B892-4D0A-ADC5-7544D958E3C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationSystem.Contracts", "NotificationSystem.Contracts\NotificationSystem.Contracts.csproj", "{AE737205-4D15-45CC-B1A3-A7FB3DE53E9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Contracts", "NotificationSystem.Contracts\NotificationSystem.Contracts.csproj", "{AE737205-4D15-45CC-B1A3-A7FB3DE53E9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationSystem.Tests", "NotificationSystem.Tests\NotificationSystem.Tests.csproj", "{7C360CB9-721D-4863-B136-4C82959B70AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Tests", "NotificationSystem.Tests\NotificationSystem.Tests.csproj", "{7C360CB9-721D-4863-B136-4C82959B70AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationSystem.Worker", "NotificationSystem.Worker\NotificationSystem.Worker.csproj", "{452BF3FE-D0FE-46A8-824D-B1CDF6C5F228}"
-	ProjectSection(ProjectDependencies) = postProject
-		{69D41C20-B4A5-45BE-9FF9-6DCA406DFA6C} = {69D41C20-B4A5-45BE-9FF9-6DCA406DFA6C}
-		{834AFC05-DB87-416D-B435-C3CF9B2E0771} = {834AFC05-DB87-416D-B435-C3CF9B2E0771}
-		{85A3B5D8-D4BE-4C69-AE9F-BAD58B1F0D26} = {85A3B5D8-D4BE-4C69-AE9F-BAD58B1F0D26}
-		{AE737205-4D15-45CC-B1A3-A7FB3DE53E9A} = {AE737205-4D15-45CC-B1A3-A7FB3DE53E9A}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

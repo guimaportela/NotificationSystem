@@ -3,7 +3,7 @@ using NotificationSystem.Contracts.Infrastructure;
 
 namespace NotificationSystem.Infrastructure.Queueing
 {
-    public class MemoryQueueProvider : ICacheProvider
+    public class MemoryQueueProvider : IMemoryQueueProvider
     {
         private readonly IMemoryCache _memoryCache;
         private static readonly TimeSpan DefaultTtl = TimeSpan.FromHours(3);

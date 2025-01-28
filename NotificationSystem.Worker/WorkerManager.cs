@@ -55,7 +55,7 @@ namespace NotificationSystem.Worker
                     {
                         _serviceProvider.GetService<ILoggerFactory>(),
                         workerConfiguration.SleepTimeInSeconds,
-                        _serviceProvider.GetService<ICacheProvider>(),
+                        _serviceProvider.GetService<IMemoryQueueProvider>(),
                         _serviceProvider.GetService<INotificationBO>()
                     });
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NotificationSystem.Contracts.Infrastructure
 {
-    public interface ICacheProvider
+    public interface IMemoryCacheProvider
     {
         void StoreAsync<T>(object key, T value) where T : class;
         void StoreAsync<T>(object key, T value, TimeSpan ttl) where T : class;

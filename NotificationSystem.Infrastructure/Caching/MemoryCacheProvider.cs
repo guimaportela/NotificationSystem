@@ -3,7 +3,7 @@ using NotificationSystem.Contracts.Infrastructure;
 
 namespace NotificationSystem.Infrastructure.Caching
 {
-    public class MemoryCacheProvider : ICacheProvider
+    public class MemoryCacheProvider : IMemoryCacheProvider
     {
         private readonly IMemoryCache _memoryCache;
         private static readonly TimeSpan DefaultTtl = TimeSpan.FromHours(24);

@@ -1,27 +1,33 @@
 ﻿using Microsoft.Extensions.Logging;
 using NotificationSystem.Common;
+using NotificationSystem.Contracts;
 using NotificationSystem.Contracts.Business;
 using NotificationSystem.Contracts.Clients;
 using NotificationSystem.Contracts.Infrastructure;
 using NotificationSystem.Exceptions;
+using NotificationSystem.Infrastructure.Queueing;
+using System.Net;
 
 namespace NotificationSystem.Business.Business
 {
     public class NotificationBO : INotificationBO
     {
         private readonly ILogger<NotificationBO> _logger;
-        private readonly ICacheProvider _memoryCacheProvider;
+        private readonly IMemoryCacheProvider _memoryCacheProvider;
         private readonly IGateway _gateway;
+        private readonly IMemoryQueueProvider _memoryQueueProvider;
 
         private static string GetUserNotificationsKey(string type, string userId) => $"{type}:{userId}"; //TODO: Entender vantagem do static nesse caso
 
-        public NotificationBO(ILogger<NotificationBO> logger, ICacheProvider memoryCacheProvider, IGateway gateway)
+        public NotificationBO(ILogger<NotificationBO> logger, IMemoryCacheProvider memoryCacheProvider, IGateway gateway, IMemoryQueueProvider memoryQueueProvider)
         {
             _logger = logger;
             _memoryCacheProvider = memoryCacheProvider;
             _gateway = gateway;
+            _memoryQueueProvider = memoryQueueProvider;
         }
 
+        //TODO: Talvez retornar IAction
         public async Task Send(string type, string userId, string message)
         {
             try
@@ -33,16 +39,14 @@ namespace NotificationSystem.Business.Business
                 if (IsRateLimited(type, userId, notificationsInWindow))
                 {
                     OldestNotificationHandler(notificationKey, notificationsInWindow);
-
                     throw new RateLimitExceededException(type, userId);
                 }
 
-                await _gateway.Send(userId, message); //TODO: Using Background service to handle
-                _logger.LogInformation($"Notification sent to user '{userId}' for type '{type}'.");
+                await SendNotificationToGateway(type, userId, message);
 
                 NotificationsHistoryHandler(notificationKey, notificationsInWindow);
             }
-            catch (Exception e) when (e is NotImplementedException || e is RateLimitExceededException)
+            catch (Exception e) when (e is NotImplementedException || e is RateLimitExceededException || e is GatewayInternalException) //TODO: Testar
             {
                 throw;
             }
@@ -82,6 +86,28 @@ namespace NotificationSystem.Business.Business
                 DateTime.UtcNow);
 
             return true;
+        }
+
+        private async Task SendNotificationToGateway(string type, string userId, string message)
+        {
+            try
+            {
+                await _gateway.Send(userId, message);
+            }
+            catch (HttpRequestException ex) when (ex.StatusCode is >= HttpStatusCode.InternalServerError)
+            {
+                _logger.LogError("[GatewayInternalError] Notification will be retry. Type: '{NotificationType}', " +
+                "UserId: '{UserId}'. Timestamp: {Timestamp}.", type, userId, DateTime.UtcNow);
+                RetryNotification(type, userId, message);
+
+                throw new GatewayInternalException();
+            }
+        }
+
+        private void RetryNotification(string type, string userId, string message)
+        {
+            var notification = new NotificationDTO { Type = type, UserId = userId, Message = message };
+            _memoryQueueProvider.StoreAsync(QueueKey.OnNotificationRetry, notification);
         }
 
         public void NotificationsHistoryHandler(string notificationKey, Queue<DateTime> notificationsInWindow)

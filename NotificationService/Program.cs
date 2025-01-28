@@ -5,6 +5,8 @@ using NotificationSystem.Infrastructure.Caching;
 using NotificationSystem.Contracts.Clients;
 using NotificationSystem.Contracts.Business;
 using NotificationSystem.Contracts.Infrastructure;
+using NotificationSystem.Worker;
+using NotificationSystem.Infrastructure.Queueing;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +29,13 @@ builder.Services.AddSingleton<IGateway, Gateway>();
 builder.Services.AddSingleton<INotificationBO, NotificationBO>(); 
 #endregion
 
-#region Caching
-builder.Services.AddSingleton<ICacheProvider, MemoryCacheProvider>();
+#region Infrastructure
+builder.Services.AddSingleton<IMemoryCacheProvider, MemoryCacheProvider>();
+builder.Services.AddSingleton<IMemoryQueueProvider, MemoryQueueProvider>();
 #endregion
+
+builder.Services.AddSingleton<WorkerManager>();
+builder.Services.AddHostedService<WorkerBackgroundService>();
 
 #region [Web API Setup]
 builder.Services.AddSwaggerGen();

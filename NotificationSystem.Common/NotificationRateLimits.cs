@@ -7,13 +7,14 @@
         {
             { NotificationType.Status, new RateLimitConfig(2, 1) },
             { NotificationType.News, new RateLimitConfig(1, 1440) },
-            { NotificationType.Marketing, new RateLimitConfig(3, 60) }
+            { NotificationType.Marketing, new RateLimitConfig(3, 60) },
+            { NotificationType.ResetPassword, new RateLimitConfig(5, 1, true) }
         };
 
         public static RateLimitConfig GetRateLimit(string messageType)
         {
             if (!RateLimits.ContainsKey(messageType))
-                throw new Exception($"Rate limit not configured for message type: {messageType}");
+                throw new Exception($"Rate limit not configured for message type: {messageType}"); //ASSUMPTION: Only mapped notifications will be send
 
             return RateLimits[messageType];
         }
@@ -28,11 +29,13 @@
     {
         public int Limit { get; }
         public int PeriodInMinutes { get; }
+        public bool IsReriable { get; }
 
-        public RateLimitConfig(int limit, int periodInMinutes)
+        public RateLimitConfig(int limit, int periodInMinutes, bool isReriable = false)
         {
             Limit = limit;
             PeriodInMinutes = periodInMinutes;
+            IsReriable = isReriable;
         }
     }
 }
