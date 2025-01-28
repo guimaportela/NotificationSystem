@@ -11,12 +11,17 @@
             { NotificationType.ResetPassword, new RateLimitConfig(5, 1, true) }
         };
 
-        public static RateLimitConfig GetRateLimit(string messageType)
+        public static RateLimitConfig GetRateLimitByType(string messageType)
         {
             if (!RateLimits.ContainsKey(messageType))
                 throw new Exception($"Rate limit not configured for message type: {messageType}"); //ASSUMPTION: Only mapped notifications will be send
 
             return RateLimits[messageType];
+        }
+
+        public static Dictionary<string, RateLimitConfig> GetRateLimits()
+        {
+            return RateLimits;
         }
 
         public static bool CheckIfTypeIsMapped(string messageType)

@@ -63,8 +63,8 @@ namespace NotificationSystem.Business.Business
                 throw new NotImplementedException($"Type '{notificationDTO.Type}' is invalid");
 
             //Data
-            var rateLimit = NotificationRateLimits.GetRateLimit(notificationDTO.Type).Limit;
-            var timeWindowInMinutes = NotificationRateLimits.GetRateLimit(notificationDTO.Type).PeriodInMinutes;
+            var rateLimit = NotificationRateLimits.GetRateLimitByType(notificationDTO.Type).Limit;
+            var timeWindowInMinutes = NotificationRateLimits.GetRateLimitByType(notificationDTO.Type).PeriodInMinutes;
 
             //If there is no history cached, there is no reason to block it
             if (notificationsInWindow.Count() == 0) return false;
@@ -124,7 +124,7 @@ namespace NotificationSystem.Business.Business
         public void OldestNotificationHandler(string notificationKey, Queue<DateTime> notificationsInWindow)
         {
             //Data
-            var timeWindowInMinutes = NotificationRateLimits.GetRateLimit(NotificationType.Status).PeriodInMinutes;
+            var timeWindowInMinutes = NotificationRateLimits.GetRateLimitByType(NotificationType.Status).PeriodInMinutes;
 
             //Checking the if the first notification in saved history is over the established time window
             var firstNotificationInWindow = notificationsInWindow.Peek();
