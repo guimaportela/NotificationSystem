@@ -29,7 +29,6 @@ The system checks if the number of notifications sent exceeds the defined limit 
 - **FluentAssertions**: For streamlined unit testing and assertions.
 - **Moq**: For creating mocks in tests.
 - **XUnit**: Testing framework used.
-- **AutoFaker**: For generating test data.
 - **SwaggerUI**: For API visualization and interaction.
 
 ---
