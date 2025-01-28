@@ -3,6 +3,7 @@ using NotificationSystem.Contracts.Infrastructure;
 
 namespace NotificationSystem.Infrastructure.Caching
 {
+    //Faking a Redis Cache Provider
     public class MemoryCacheProvider : ICacheProvider
     {
         private readonly IMemoryCache _memoryCache;

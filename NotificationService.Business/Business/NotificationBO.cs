@@ -13,7 +13,7 @@ namespace NotificationSystem.Business.Business
         private readonly ICacheProvider _memoryCacheProvider;
         private readonly IGateway _gateway;
 
-        private static string GetUserNotificationsKey(string type, string userId) => $"{type}:{userId}"; //TODO: Entender vantagem do static nesse caso
+        private static string GetUserNotificationsKey(string type, string userId) => $"{type}:{userId}";
 
         public NotificationBO(ILogger<NotificationBO> logger, ICacheProvider memoryCacheProvider, IGateway gateway)
         {
@@ -37,7 +37,7 @@ namespace NotificationSystem.Business.Business
                     throw new RateLimitExceededException(type, userId);
                 }
 
-                await _gateway.Send(userId, message); //TODO: Using Background service to handle
+                await _gateway.Send(userId, message);
                 _logger.LogInformation($"Notification sent to user '{userId}' for type '{type}'.");
 
                 NotificationsHistoryHandler(notificationKey, notificationsInWindow);
@@ -70,7 +70,6 @@ namespace NotificationSystem.Business.Business
             TimeSpan ts = DateTime.UtcNow - lastNotificationInWindow;
             if ((ts.TotalMinutes <= timeWindowInMinutes) && notificationsInWindow.Count() < rateLimit) return false;
 
-            //TODO: Talvez colocar build da mensagem
             _logger.LogError("[RateLimitExceeded] Notification blocked. Type: '{NotificationType}', " +
                 "UserId: '{UserId}', Limit: {RateLimit}, Period: {PeriodInMinutes} minutes. " +
                 "Current Notifications in Window: {CurrentCount}. Timestamp: {Timestamp}.",
