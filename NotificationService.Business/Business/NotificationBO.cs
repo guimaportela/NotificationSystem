@@ -72,7 +72,10 @@ namespace NotificationSystem.Business.Business
             //Calculate the time span between the last notification registered and UTCNow
             var lastNotificationInWindow = notificationsInWindow.Peek();
             TimeSpan ts = DateTime.UtcNow - lastNotificationInWindow;
-            if ((ts.TotalMinutes <= timeWindowInMinutes) && notificationsInWindow.Count() < rateLimit) return false;
+
+            //If the last registered notification is older than the rate limit time window, or there are fewer
+            //notifications than the limit, the request is not rate limited
+            if (ts.TotalMinutes >= timeWindowInMinutes || notificationsInWindow.Count() < rateLimit) return false;
 
             _logger.LogError("[RateLimitExceeded] Notification blocked. Type: '{NotificationType}', " +
                 "UserId: '{UserId}', Limit: {RateLimit}, Period: {PeriodInMinutes} minutes. " +
