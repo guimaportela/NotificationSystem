@@ -8,8 +8,8 @@ namespace NotificationSystem.Contracts.Business
 {
     public interface INotificationBO
     {
-        Task Send(string type, string userId, string message);
-        bool IsRateLimited(string type, string userId, Queue<DateTime> notificationsInWindow);
+        Task Send(NotificationDTO notificationDTO);
+        bool IsRateLimited(NotificationDTO notificationDTO, Queue<DateTime> notificationsInWindow);
         void NotificationsHistoryHandler(string notificationKey, Queue<DateTime> notificationsInWindow);
         void OldestNotificationHandler(string notificationKey, Queue<DateTime> notificationsInWindow);
     }

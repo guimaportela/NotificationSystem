@@ -30,6 +30,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Common", "NotificationSystem.Common\NotificationSystem.Common.csproj", "{85A3B5D8-D4BE-4C69-AE9F-BAD58B1F0D26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Exceptions", "NotificationSystem.Exceptions\NotificationSystem.Exceptions.csproj", "{27B81E54-B892-4D0A-ADC5-7544D958E3C2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AE737205-4D15-45CC-B1A3-A7FB3DE53E9A} = {AE737205-4D15-45CC-B1A3-A7FB3DE53E9A}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationSystem.Contracts", "NotificationSystem.Contracts\NotificationSystem.Contracts.csproj", "{AE737205-4D15-45CC-B1A3-A7FB3DE53E9A}"
 EndProject

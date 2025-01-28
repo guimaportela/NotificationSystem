@@ -17,7 +17,7 @@ namespace NotificationSystem.Business.Business
         private readonly IGateway _gateway;
         private readonly IMemoryQueueProvider _memoryQueueProvider;
 
-        private static string GetUserNotificationsKey(string type, string userId) => $"{type}:{userId}";
+        private static string GetUserNotificationsKey(NotificationDTO notificationDTO) => $"{notificationDTO.Type}:{notificationDTO.UserId}";
 
         public NotificationBO(ILogger<NotificationBO> logger, IMemoryCacheProvider memoryCacheProvider, IGateway gateway, IMemoryQueueProvider memoryQueueProvider)
         {
@@ -28,21 +28,21 @@ namespace NotificationSystem.Business.Business
         }
 
         //TODO: Talvez retornar IAction
-        public async Task Send(string type, string userId, string message)
+        public async Task Send(NotificationDTO notificationDTO)
         {
             try
             {
                 //Getting last notifications cached in time window
-                var notificationKey = GetUserNotificationsKey(type, userId);
+                var notificationKey = GetUserNotificationsKey(notificationDTO);
                 var notificationsInWindow = _memoryCacheProvider.RetrieveAsync<Queue<DateTime>>(notificationKey) ?? new Queue<DateTime>();
 
-                if (IsRateLimited(type, userId, notificationsInWindow))
+                if (IsRateLimited(notificationDTO, notificationsInWindow))
                 {
                     OldestNotificationHandler(notificationKey, notificationsInWindow);
-                    throw new RateLimitExceededException(type, userId);
+                    throw new RateLimitExceededException(notificationDTO);
                 }
 
-                await SendNotificationToGateway(type, userId, message);
+                await SendNotificationToGateway(notificationDTO);
 
                 NotificationsHistoryHandler(notificationKey, notificationsInWindow);
             }
@@ -57,14 +57,14 @@ namespace NotificationSystem.Business.Business
             }
         }
 
-        public bool IsRateLimited(string type, string userId, Queue<DateTime> notificationsInWindow)
+        public bool IsRateLimited(NotificationDTO notificationDTO, Queue<DateTime> notificationsInWindow)
         {
-            if (!NotificationRateLimits.CheckIfTypeIsMapped(type))
-                throw new NotImplementedException($"Type '{type}' is invalid");
+            if (!NotificationRateLimits.CheckIfTypeIsMapped(notificationDTO.Type))
+                throw new NotImplementedException($"Type '{notificationDTO.Type}' is invalid");
 
             //Data
-            var rateLimit = NotificationRateLimits.GetRateLimit(type).Limit;
-            var timeWindowInMinutes = NotificationRateLimits.GetRateLimit(type).PeriodInMinutes;
+            var rateLimit = NotificationRateLimits.GetRateLimit(notificationDTO.Type).Limit;
+            var timeWindowInMinutes = NotificationRateLimits.GetRateLimit(notificationDTO.Type).PeriodInMinutes;
 
             //If there is no history cached, there is no reason to block it
             if (notificationsInWindow.Count() == 0) return false;
@@ -80,8 +80,8 @@ namespace NotificationSystem.Business.Business
             _logger.LogError("[RateLimitExceeded] Notification blocked. Type: '{NotificationType}', " +
                 "UserId: '{UserId}', Limit: {RateLimit}, Period: {PeriodInMinutes} minutes. " +
                 "Current Notifications in Window: {CurrentCount}. Timestamp: {Timestamp}.",
-                type,
-                userId,
+                notificationDTO.Type,
+                notificationDTO.UserId,
                 rateLimit,
                 timeWindowInMinutes,
                 notificationsInWindow.Count,
@@ -90,26 +90,25 @@ namespace NotificationSystem.Business.Business
             return true;
         }
 
-        private async Task SendNotificationToGateway(string type, string userId, string message)
+        private async Task SendNotificationToGateway(NotificationDTO notificationDTO)
         {
             try
             {
-                await _gateway.Send(userId, message);
+                await _gateway.Send(notificationDTO.UserId, notificationDTO.Message);
             }
             catch (HttpRequestException ex) when (ex.StatusCode is >= HttpStatusCode.InternalServerError)
             {
                 _logger.LogError("[GatewayInternalError] Notification will be retry. Type: '{NotificationType}', " +
-                "UserId: '{UserId}'. Timestamp: {Timestamp}.", type, userId, DateTime.UtcNow);
-                RetryNotification(type, userId, message);
+                "UserId: '{UserId}'. Timestamp: {Timestamp}.", notificationDTO.Type, notificationDTO.UserId, DateTime.UtcNow);
+                RetryNotification(notificationDTO);
 
                 throw new GatewayInternalException();
             }
         }
 
-        private void RetryNotification(string type, string userId, string message)
+        private void RetryNotification(NotificationDTO notificationDTO)
         {
-            var notification = new NotificationDTO { Type = type, UserId = userId, Message = message };
-            _memoryQueueProvider.StoreAsync(QueueKey.OnNotificationRetry, notification);
+            _memoryQueueProvider.StoreAsync(QueueKey.OnNotificationRetry, notificationDTO);
         }
 
         public void NotificationsHistoryHandler(string notificationKey, Queue<DateTime> notificationsInWindow)

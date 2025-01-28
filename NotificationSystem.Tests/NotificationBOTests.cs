@@ -52,8 +52,7 @@ namespace NotificationSystem.Tests
                 .Returns(Task.CompletedTask);
 
             // Act
-            Func<Task> act = async () => await _notificationBO.Send(
-                _notification.Type, _notification.UserId, _notification.Message);
+            Func<Task> act = async () => await _notificationBO.Send(_notification);
 
             // Then
             await act.Should().NotThrowAsync();
@@ -69,8 +68,7 @@ namespace NotificationSystem.Tests
                 .Returns(new Queue<DateTime>(new[] { DateTime.UtcNow.AddSeconds(-30), DateTime.UtcNow }));
 
             // Act
-            Func<Task> act = async () => await _notificationBO.Send(
-                _notification.Type, _notification.UserId, _notification.Message);
+            Func<Task> act = async () => await _notificationBO.Send(_notification);
 
             // Then
             await act.Should().ThrowAsync<RateLimitExceededException>();

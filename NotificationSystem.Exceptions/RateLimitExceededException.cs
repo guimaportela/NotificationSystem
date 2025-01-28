@@ -1,9 +1,11 @@
-﻿namespace NotificationSystem.Exceptions
+﻿using NotificationSystem.Contracts;
+
+namespace NotificationSystem.Exceptions
 {
     public class RateLimitExceededException : Exception
     {
         public RateLimitExceededException() { }
-        public RateLimitExceededException(string notificationType, string userId)
-            : base($"Notification blocked. Type: '{notificationType}', UserId: '{userId}'. Timestamp: {DateTime.UtcNow}.") { }
+        public RateLimitExceededException(NotificationDTO notificationDTO)
+            : base($"Notification blocked. Type: '{notificationDTO.Type}', UserId: '{notificationDTO.UserId}'. Timestamp: {DateTime.UtcNow}.") { }
     }
 }

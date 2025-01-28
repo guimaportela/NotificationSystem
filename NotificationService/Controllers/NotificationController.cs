@@ -25,10 +25,7 @@ namespace NotificationSystem.Controllers
         {
             try
             {
-                await _notificationBO.Send(
-                    notificationDTO.Type, 
-                    notificationDTO.UserId,
-                    notificationDTO.Message);
+                await _notificationBO.Send(notificationDTO);
 
                 return Ok("Notification sent successfully.");
             }
