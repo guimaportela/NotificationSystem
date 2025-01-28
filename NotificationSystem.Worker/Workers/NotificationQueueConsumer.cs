@@ -1,14 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using NotificationSystem.Business.Business;
 using NotificationSystem.Contracts;
 using NotificationSystem.Contracts.Business;
 using NotificationSystem.Contracts.Infrastructure;
 using NotificationSystem.Infrastructure.Queueing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NotificationSystem.Worker.Workers
 {
@@ -34,7 +28,7 @@ namespace NotificationSystem.Worker.Workers
         {
             _logger.LogInformation($"Processing Notification from user: {item.UserId} for Type: {item.Type}");
 
-            await _notificationBO.Send(item.Type, item.UserId, item.Message);
+            await _notificationBO.Send(item);
         }
 
         public override Task ProcessItemError(NotificationDTO item, Exception ex)
