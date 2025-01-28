@@ -7,13 +7,11 @@
 ## **Índice**
 
 1. [Descrição](#descrição)
-2. [Funcionalidades](#funcionalidades)
-3. [Tecnologias Usadas](#tecnologias-usadas)
-4. [Instalação](#instalação)
+2. [Tecnologias Usadas](#tecnologias-usadas)
+3. [Instalação](#instalação)
+4. [Funcionalidades](#funcionalidades)
 5. [Como Usar](#como-usar)
 6. [Testes](#testes)
-7. [Contribuição](#contribuição)
-8. [Licença](#licença)
 
 ---
 
@@ -25,15 +23,6 @@ O sistema verifica se o número de notificações enviadas excede o limite defin
 
 ---
 
-## **Funcionalidades**
-
-- Envio de notificações de diferentes tipos (Status, News, Marketing)
-- Rate-limiting baseado em diferentes tipos de notificação
-- Retentativa de envio de notificações quando o limite de taxa é atingido
-- Armazenamento de histórico de notificações no cache para controle de limites
-
----
-
 ## **Tecnologias Usadas**
 
 - **.NET 8.0**: Framework principal utilizado.
@@ -41,7 +30,7 @@ O sistema verifica se o número de notificações enviadas excede o limite defin
 - **Moq**: Para criação de mocks nos testes.
 - **XUnit**: Framework de testes utilizado.
 - **AutoFaker**: Para geração de dados de teste.
-- **GitHub Actions**: Para automação de CI/CD.
+- **SwaggerUI**: Para visualização e interação com as APIs.
 
 ---
 
@@ -86,6 +75,16 @@ Antes de começar, você precisará de:
     ```bash
     dotnet test
     ```
+
+
+---
+
+## **Funcionalidades**
+
+- Envio de notificações de diferentes tipos (Status, News, Marketing)
+- Rate-limiting baseado em diferentes tipos de notificação
+- Retentativa de envio de notificações quando o limite de taxa é atingido
+- Armazenamento de histórico de notificações no cache para controle de limites
 
 ---
 
