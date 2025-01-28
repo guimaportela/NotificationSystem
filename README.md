@@ -4,94 +4,93 @@
 
 ---
 
-## **Índice**
+## **Table of Contents**
 
-1. [Descrição](#descrição)
-2. [Tecnologias Usadas](#tecnologias-usadas)
-3. [Instalação](#instalação)
-4. [Funcionalidades](#funcionalidades)
-5. [Como Usar](#como-usar)
-6. [Testes](#testes)
-
----
-
-## **Descrição**
-
-Este projeto é um serviço de notificação com limitação de taxa (rate-limiting). Ele envia notificações para os usuários com base em diferentes tipos (como Status, News, Marketing) e aplica limites para garantir que os usuários não sejam sobrecarregados com muitas notificações em um curto período de tempo.
-
-O sistema verifica se o número de notificações enviadas excede o limite definido para cada tipo de mensagem e rejeita novas notificações quando o limite é atingido. Ele também oferece uma funcionalidade de retry para garantir que as notificações sejam enviadas quando possível.
+1. [Description](#description)
+2. [Tech Stack](#tech-stack)
+3. [Installation](#installation)
+4. [Features](#features)
+5. [Usage](#usage)
+6. [Tests](#tests)
 
 ---
 
-## **Tecnologias Usadas**
+## **Description**
 
-- **.NET 8.0**: Framework principal utilizado.
-- **FluentAssertions**: Para facilitar os testes unitários e asserções.
-- **Moq**: Para criação de mocks nos testes.
-- **XUnit**: Framework de testes utilizado.
-- **AutoFaker**: Para geração de dados de teste.
-- **SwaggerUI**: Para visualização e interação com as APIs.
+This project is a notification service with rate-limiting functionality. It sends notifications to users based on different types (such as Status, News, Marketing) and enforces limits to ensure users are not overwhelmed with too many notifications in a short period.
+
+The system checks if the number of notifications sent exceeds the defined limit for each message type and rejects new notifications when the limit is reached. It also provides a retry mechanism to ensure notifications are sent whenever possible.
 
 ---
 
-## **Instalação**
+## **Tech Stack**
 
-### Pré-requisitos
+- **.NET 7.0**: Core framework used.
+- **FluentAssertions**: For streamlined unit testing and assertions.
+- **Moq**: For creating mocks in tests.
+- **XUnit**: Testing framework used.
+- **AutoFaker**: For generating test data.
+- **SwaggerUI**: For API visualization and interaction.
 
-Antes de começar, você precisará de:
+---
+
+## **Installation**
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed:
 
 - [Git](https://git-scm.com/)
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet)
-- [Visual Studio](https://visualstudio.microsoft.com/) ou outro editor de sua escolha
+- [.NET 7.0 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
+- [Visual Studio](https://visualstudio.microsoft.com/) or your preferred IDE
 
-### Passos
+### Steps
 
-1. Clone o repositório:
-
-    ```bash
-    git clone https://github.com/seu-usuario/seu-repositorio.git
-    ```
-
-2. Navegue até o diretório do projeto:
+1. Clone the repository:
 
     ```bash
-    cd seu-repositorio
+    git clone https://github.com/your-username/your-repository.git
     ```
 
-3. Restaure as dependências:
+2. Navigate to the project directory:
+
+    ```bash
+    cd your-repository
+    ```
+
+3. Restore dependencies:
 
     ```bash
     dotnet restore
     ```
 
-4. Execute o projeto:
+4. Run the project:
 
     ```bash
     dotnet run
     ```
 
-5. Para rodar os testes:
+5. Run the tests:
 
     ```bash
     dotnet test
     ```
 
+---
+
+## **Features**
+
+- Send notifications of different types (Status, News, Marketing)
+- Rate-limiting based on notification type
+- Retry mechanism for notifications blocked due to rate limits
+- Cache-based notification history for rate control
 
 ---
 
-## **Funcionalidades**
+## **Usage**
 
-- Envio de notificações de diferentes tipos (Status, News, Marketing)
-- Rate-limiting baseado em diferentes tipos de notificação
-- Retentativa de envio de notificações quando o limite de taxa é atingido
-- Armazenamento de histórico de notificações no cache para controle de limites
-
----
-
-## **Como Usar**
-
-Para enviar uma notificação, chame o método `Send` passando os parâmetros necessários:
+To send a notification, call the `Send` method with the required parameters:
 
 ```csharp
-var notificationService = new NotificationService();
-await notificationService.Send("news", "user123", "This is a news update.");
+var notificationBO = new NotificationBO(cacheProvider, gateway);
+await notificationBO.Send("news", "user123", "This is a news update.");
