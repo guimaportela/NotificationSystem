@@ -1,10 +1,7 @@
-using AutoBogus;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NotificationSystem.Business.Business;
-using NotificationSystem.Business.Services;
-using NotificationSystem.Common;
 using NotificationSystem.Contracts;
 using NotificationSystem.Contracts.Business;
 using NotificationSystem.Contracts.Clients;
@@ -13,7 +10,7 @@ using NotificationSystem.Exceptions;
 
 namespace NotificationSystem.Tests
 {
-    public class NotificationServiceTests
+    public class NotificationBOTests
     {
         //Clients
         private readonly Mock<IGateway> _mockGateway;
@@ -26,7 +23,7 @@ namespace NotificationSystem.Tests
         //Notification
         private readonly NotificationDTO _notification;
 
-        public NotificationServiceTests()
+        public NotificationBOTests()
         {
             //Clients
             _mockGateway = new Mock<IGateway>();
@@ -46,10 +43,25 @@ namespace NotificationSystem.Tests
         }
 
         [Fact]
+        public async Task Send_ShouldReturnSuccessResult_WhenNotifierReturnsSuccess()
+        {
+            _mockGateway
+                .Setup(g => g.Send(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            Func<Task> act = async () => await _notificationBO.Send(
+                _notification.Type, _notification.UserId, _notification.Message);
+
+            // Then
+            await act.Should().NotThrowAsync();
+
+            _mockGateway.Verify(g => g.Send(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
         public async Task Send_ShouldThrowException_WhenRateLimitIsExceeded()
         {
-            var notification = AutoFaker.Generate<NotificationDTO>();
-
             _mockCacheProvider
                 .Setup(c => c.RetrieveAsync<Queue<DateTime>>(It.IsAny<string>()))
                 .Returns(new Queue<DateTime>(new[] { DateTime.UtcNow.AddMinutes(-1), DateTime.UtcNow }));
