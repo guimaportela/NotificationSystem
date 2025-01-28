@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NotificationService.Clients\NotificationSystem.Clients.csproj" />
+    <ProjectReference Include="..\NotificationSystem.Common\NotificationSystem.Common.csproj" />
+    <ProjectReference Include="..\NotificationSystem.Contracts\NotificationSystem.Contracts.csproj" />
+    <ProjectReference Include="..\NotificationSystem.Exceptions\NotificationSystem.Exceptions.csproj" />
+    <ProjectReference Include="..\NotificationSystem.Infrastructure\NotificationSystem.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
