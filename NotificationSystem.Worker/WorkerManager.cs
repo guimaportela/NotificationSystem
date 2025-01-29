@@ -14,7 +14,6 @@ namespace NotificationSystem.Worker
         private readonly ILogger<WorkerManager> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfiguration _configs;
-        private readonly ConcurrentBag<dynamic> _workers;
 
 
         public WorkerManager(ILogger<WorkerManager> logger, IServiceProvider serviceProvider, IConfiguration configs)
@@ -51,6 +50,7 @@ namespace NotificationSystem.Worker
 
                 for (int i = 0; i < (workerConfiguration?.Instances ?? 1); i++)
                 {
+                    //Dinamically instantiating each worker instance using Reflection
                     dynamic _worker1 = Activator.CreateInstance(workerType, new object[]
                     {
                         _serviceProvider.GetService<ILoggerFactory>(),
@@ -62,6 +62,7 @@ namespace NotificationSystem.Worker
                     if (_worker1 == null)
                         continue;
 
+                    //Starting Work execution defined in WorkerBase
                     _worker1.DoPeriodicWork(stoppingToken);
                 }
             }

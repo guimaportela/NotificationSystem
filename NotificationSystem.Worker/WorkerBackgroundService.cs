@@ -10,7 +10,6 @@ namespace NotificationSystem.Worker
         private readonly WorkerManager _workerManager;
 
         private int _executionCount;
-        private readonly ConcurrentBag<dynamic> _workers;
 
         public WorkerBackgroundService(ILogger<WorkerBackgroundService> logger, WorkerManager workerManager)
         {

@@ -34,13 +34,13 @@
     {
         public int Limit { get; }
         public int PeriodInMinutes { get; }
-        public bool IsReriable { get; }
+        public bool IsRetryable { get; }
 
-        public RateLimitConfig(int limit, int periodInMinutes, bool isReriable = false)
+        public RateLimitConfig(int limit, int periodInMinutes, bool isRetryable = false)
         {
             Limit = limit;
             PeriodInMinutes = periodInMinutes;
-            IsReriable = isReriable;
+            IsRetryable = isRetryable;
         }
     }
 }

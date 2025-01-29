@@ -27,7 +27,6 @@ namespace NotificationSystem.Business.Business
             _memoryQueueProvider = memoryQueueProvider;
         }
 
-        //TODO: Talvez retornar IAction
         public async Task Send(NotificationDTO notificationDTO)
         {
             try
@@ -46,7 +45,7 @@ namespace NotificationSystem.Business.Business
 
                 NotificationsHistoryHandler(notificationKey, notificationsInWindow);
             }
-            catch (Exception e) when (e is NotImplementedException || e is RateLimitExceededException || e is GatewayInternalException) //TODO: Testar
+            catch (Exception e) when (e is NotImplementedException || e is RateLimitExceededException || e is GatewayInternalException)
             {
                 throw;
             }
@@ -90,6 +89,8 @@ namespace NotificationSystem.Business.Business
             return true;
         }
 
+        //Method to centralize de gateway interaction and if any 5XX error happened, the notification will be 
+        //send to the OnNotificationRetry queue (faking a SQS queue)
         private async Task SendNotificationToGateway(NotificationDTO notificationDTO)
         {
             try
@@ -100,12 +101,13 @@ namespace NotificationSystem.Business.Business
             {
                 _logger.LogError("[GatewayInternalError] Notification will be retry. Type: '{NotificationType}', " +
                 "UserId: '{UserId}'. Timestamp: {Timestamp}.", notificationDTO.Type, notificationDTO.UserId, DateTime.UtcNow);
-                RetryNotification(notificationDTO);
 
+                RetryNotification(notificationDTO);
                 throw new GatewayInternalException();
             }
         }
 
+        //Sends Notification to OnNotificationRetry queue, consumed by NotificationQueueConsumer
         private void RetryNotification(NotificationDTO notificationDTO)
         {
             _memoryQueueProvider.StoreAsync(QueueKey.OnNotificationRetry, notificationDTO);
