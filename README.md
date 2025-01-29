@@ -48,13 +48,13 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/your-repository.git
+    git clone https://github.com/guimaportela/NotificationSystem
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd your-repository
+    cd NotificationSystem\NotificationService
     ```
 
 3. Restore dependencies:
@@ -68,8 +68,14 @@ Before you begin, ensure you have the following installed:
     ```bash
     dotnet run
     ```
+5. Navigate to the test directory:
 
-5. Run the tests:
+    ```bash
+    cd ..
+    cd NotificationSystem.Tests
+    ```
+
+6. Run the tests:
 
     ```bash
     dotnet test
