@@ -12,7 +12,7 @@ namespace NotificationSystem.Worker
         protected readonly PeriodicTimer _timer;
         protected string _id = Guid.NewGuid().ToString();
 
-        protected WorkerBase(ILoggerFactory loggerFactory, int sleepTimeInSeconds, IMemoryQueueProvider memoryQueueProvider, INotificationBO notificationBO) //TODO: Melhorar essa injeção
+        protected WorkerBase(ILoggerFactory loggerFactory, int sleepTimeInSeconds, IMemoryQueueProvider memoryQueueProvider, INotificationBO notificationBO)
         {
             _logger = loggerFactory.CreateLogger(GetType());
             _timer = new(TimeSpan.FromSeconds(sleepTimeInSeconds));
