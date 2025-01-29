@@ -79,6 +79,59 @@ Before you begin, ensure you have the following installed:
 
 ## 📖 **Usage**
 
+## 1. POST /send
+
+This endpoint allows you to send notifications to users. Notifications are processed based on type and rate limits. If the rate limit for a specific notification type is exceeded, the request will return a `429` status. If the notification can’t be sent due to gateway issues, a `202` status will indicate that the notification is queued for retry.
+
+### Request Body:
+
+- **Type** (string): Type of notification (e.g., "Status", "News", "Marketing").
+- **UserId** (string): The user ID receiving the notification.
+- **Message** (string, optional): Content of the notification.
+
+### Example using cURL:
+
+ ```sh
+curl -X POST http://localhost:8080/send \
+  -H "Content-Type: application/json" \
+  -d '{"type":"Status", "userId":"1", "message":"Your status update is here!"}'
+```
+Response:
+ ```sh
+{"message":"Notification sent successfully."}
+```
+
+### Possible error responses:
+
+- `429` if rate limits are exceeded.
+- `202` for retryable gateway errors.
+- `501` for unimplemented features.
+
+---
+
+## 2. GET /rate-limits
+
+This endpoint provides the current rate limits for each notification type. These limits define how many notifications can be sent within a given time window.
+
+### Example using cURL:
+
+ ```sh
+curl -X GET http://localhost:8080/rate-limits
+```
+
+Response:
+ ```sh
+{
+  "Status": {"limit": 2, "timeWindowInMinutes": 1},
+  "News": {"limit": 1, "timeWindowInMinutes": 1440},
+  "Marketing": {"limit": 3, "timeWindowInMinutes": 60},
+  "ResetPassword": {"limit": 5, "timeWindowInMinutes": 1, "retryable": true}
+}
+```
+
+> **Note:**  
+> The `ResetPassword` notification type is marked as **retryable** due to its critical nature (e.g., password reset requests). This ensures that the request is retried by the background worker in case of temporary failures, guaranteeing the delivery of important user requests.
+
 ---
 
 ## 🔧 **Possible Improvements:**
