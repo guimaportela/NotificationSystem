@@ -154,3 +154,64 @@ The Retry Queue ("OnNotificationRetry") plays a relevant role in improving the s
 Imagine a situation where two clients make a Send Notification request at almost the same time, with only one request remaining for this user+type to be limited. In this case, both requests may be returned successfully (exceeding the Rate Limit). Depending on the volume of requests that this service will receive and the number of instances (machines) that will host it, this type of margin situation may become more common, impacting the reliability of the system.
 To do this, the logic must be reviewed and an alternative would be to implement Traffic Control using Distributed Lock with Redis. This way, only one instance will execute NotificationBO.Send at a time.
 In addition, before implementing this type of solution, a set of performance tests must be performed to confirm that this will not overly burden the API's performance.
+
+---
+
+##  **Overall Architecture**
+
+```mermaid
+graph TD;
+
+    %% Controllers
+    subgraph Controllers
+        A[NotificationController]
+        H[RateLimitController]
+    end
+
+    %% Business
+    subgraph Business
+        B[NotificationBO]
+        C{Rate Limit Exceeded?}
+        D[Return 429 Too Many Requests]
+        E{Gateway Available?}
+        M[Send to Notification Queue]
+        G[Send Notification Successfully]
+    end
+
+    %% Common
+    subgraph Common
+        X[Rate Limit Manager]
+    end
+
+    %% Background Services
+    subgraph BackgroundServices
+        J[Worker]
+    end
+
+    %% External Services
+    subgraph ExternalServices
+        K[Notification Gateway]
+        Y[External Clients and APIs]
+    end
+
+    %% Infrastructure
+    subgraph Infrastructure
+        Z[Infrastructure Services - Logging and Retry]
+    end
+
+    %% Conexões entre os elementos
+    A -->|POST /send| B
+    H -->|GET /rate-limits| X
+    B -->|Validate & Check Rate Limits| C
+    C --Yes--> D
+    C --No--> E
+    E --No--> M
+    E --Yes--> G
+    B -->|Send Notification| K
+    J -->|Consume Notification Queue| M
+    J -->|Reprocess Failed Requests| B
+    M -->|Queue Processing| J
+    Y -->|Call External APIs| B
+    Z -->|Support Services| B
+
+```
