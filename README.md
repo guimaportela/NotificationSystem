@@ -196,7 +196,7 @@ graph TD;
 
     %% Infrastructure
     subgraph Infrastructure
-        Z[Infrastructure Services - Logging and Retry]
+        Z[Infrastructure Services - Logging, Caching and Queueing]
     end
 
     %% Conexões entre os elementos
