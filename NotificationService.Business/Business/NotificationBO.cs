@@ -99,11 +99,16 @@ namespace NotificationSystem.Business.Business
             }
             catch (HttpRequestException ex) when (ex.StatusCode is >= HttpStatusCode.InternalServerError)
             {
+                _logger.LogError("[GatewayInternalError] Exception Message: {exMessage}", ex.Message);
+
+                if (!NotificationRateLimits.GetRateLimitByType(notificationDTO.Type).IsRetryable)
+                    throw new GatewayInternalException();
+
                 _logger.LogError("[GatewayInternalError] Notification will be retry. Type: '{NotificationType}', " +
-                "UserId: '{UserId}'. Timestamp: {Timestamp}.", notificationDTO.Type, notificationDTO.UserId, DateTime.UtcNow);
+                "UserId: '{UserId}'. Timestamp: {Timestamp}", notificationDTO.Type, notificationDTO.UserId, DateTime.UtcNow);
 
                 RetryNotification(notificationDTO);
-                throw new GatewayInternalException();
+                throw new GatewayInternalException(true);
             }
         }
 

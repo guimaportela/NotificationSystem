@@ -2,6 +2,11 @@
 {
     public class GatewayInternalException : Exception
     {
-        public GatewayInternalException() { }
+        public readonly bool wasRetried;
+
+        public GatewayInternalException(bool _wasRetried = default)
+        {
+            wasRetried = _wasRetried;
+        }
     }
 }

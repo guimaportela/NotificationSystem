@@ -33,9 +33,12 @@ namespace NotificationSystem.Controllers
             {
                 return StatusCode(429, ex.Message);
             }
-            catch (GatewayInternalException)
+            catch (GatewayInternalException ex)
             {
-                return StatusCode(202);
+                if(ex.wasRetried)
+                    return StatusCode(202);
+
+                return StatusCode(500, ex.Message);
             }
             catch (NotImplementedException ex)
             {
