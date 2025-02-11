@@ -75,5 +75,20 @@ namespace NotificationSystem.Tests
 
             _mockGateway.Verify(g => g.Send(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
+
+        [Fact]
+        public async Task Send_ShouldThrowGatewayInternalException_WhenGatewayExceptionIs500()
+        {
+            _notification.UserId = "500";
+            _mockGateway
+                .Setup(c => c.Send(It.Is<string>(d => d=="500"), It.IsAny<string>()))
+                .Throws(new HttpRequestException("", null, System.Net.HttpStatusCode.InternalServerError));
+
+            Func<Task> act = async () => await _notificationBO.Send(_notification);
+
+            await act.Should().ThrowAsync<GatewayInternalException>().Where(ex => !ex.wasRetried);
+
+            _mockGateway.Verify(g => g.Send(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
     }
 }
